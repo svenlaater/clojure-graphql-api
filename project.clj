@@ -12,4 +12,8 @@
                  ;; java.lang.IllegalArgumentException: Must hint overloaded method: toArray,
                  ;; compiling:(flatland/ordered/set.clj:19:1)
                  ;; e.g. https://github.com/owainlewis/yaml/issues/28
-                 [org.flatland/ordered "1.5.7"]])
+                 [org.flatland/ordered "1.5.7"]]
+  :plugins [[jonase/eastwood "0.3.4"]
+            [lein-kibit "0.1.6"]
+            [lein-ancient "0.6.15"]
+            [lein-cloverage "1.0.13"]])
