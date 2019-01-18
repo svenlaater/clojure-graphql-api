@@ -7,40 +7,29 @@
     [com.stuartsierra.component :as component]
     [clojure.edn :as edn]))
 
-(defn resolve-game-by-id
-  [games-map context args value]
-  (let [{:keys [id]} args]
-    (get games-map id)))
+(defn resolve-companies
+  [companies-vec context args value]
+  (hash-map :items companies-vec))
 
-(defn resolve-board-game-designers
-  [designers-map context args board-game]
-  (->> board-game
-       :designers
-       (map designers-map)))
-
-(defn resolve-designer-games
-  [games-map context args designer]
-  (let [{:keys [id]} designer]
-    (->> games-map
-         vals
-         (filter #(-> % :designers (contains? id))))))
+(defn resolve-company-by-uuid
+  [companies-map context args value]
+  (let [{:keys [uuid]} args]
+    (get companies-map uuid)))
 
 (defn entity-map
   [data k]
-  (reduce #(assoc %1 (:id %2) %2)
+  (reduce #(assoc %1 (:uuid %2) %2)
           {}
           (get data k)))
 
 (defn resolver-map
   [component]
-  (let [cgg-data (-> (io/resource "data.edn")
-                     slurp
-                     edn/read-string)
-        games-map (entity-map cgg-data :games)
-        designers-map (entity-map cgg-data :designers)]
-    {:query/game-by-id (partial resolve-game-by-id games-map)
-     :BoardGame/designers (partial resolve-board-game-designers designers-map)
-     :Designer/games (partial resolve-designer-games games-map)}))
+  (let [data (-> (io/resource "data.edn")
+                 slurp
+                 edn/read-string)
+        companies-map (entity-map data :companies)]
+    {:query/companies (partial resolve-companies (:companies data))
+     :query/company-by-uuid (partial resolve-company-by-uuid companies-map)}))
 
 (defn load-schema
   [component]

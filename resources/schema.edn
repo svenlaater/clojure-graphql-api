@@ -1,38 +1,38 @@
 {:objects
- {:BoardGame
-  {:description "A physical or virtual board game."
+ 
+ {:Company
+  {:description "Response for fetching a single Company"
    :fields
-   {:id {:type (non-null ID)}
-    :name {:type (non-null String)}
-    :summary {:type String
-              :description "A one-line summary of the game."}
-    :description {:type String
-                  :description "A long-form description of the game."}
-    :designers {:type (non-null (list :Designer))
-                :description "Designers who contributed to the game."
-                :resolve :BoardGame/designers}
-    :min_players {:type Int
-                  :description "The minimum number of players the game supports."}
-    :max_players {:type Int
-                  :description "The maximum number of players the game supports."}
-    :play_time {:type Int
-                :description "Play time, in minutes, for a typical game."}}}
+   {:uuid {:type (non-null ID)
+           :description "Unique ID for the company"}
+    :name {:type (non-null String)
+           :description "Name of the company"}
+    :address {:type String
+              :description "Address of the company"}
+    :phone {:type String
+            :description "Phone with country code"}
+    :number_of_employees {:type Int
+                          :description "Number of employees"}
+    :deleted {:type Boolean
+              :description "Deleted"}}}
+  :Companies
+  {:description "Response for fetching a list of companies"
+   :fields
+   {:items {:type (list :Company)
+            :descriptions "List of companies"}}}}
 
-  :Designer
-  {:description "A person who may have contributed to a board game design."
-   :fields
-   {:id {:type (non-null ID)}
-    :name {:type (non-null String)}
-    :url {:type String
-          :description "Home page URL, if known."}
-    :games {:type (non-null (list :BoardGame))
-            :description "Games designed by this designer."
-            :resolve :Designer/games}}}}
 
  :queries
- {:game_by_id
-  {:type :BoardGame
-   :description "Access a BoardGame by its unique id, if it exists."
+ {:companies
+  {:type (non-null :Companies)
+   :description "Get list of all companies"
+   :args {}
+   :resolve :query/companies}
+              
+              
+  :company_by_uuid
+  {:type :Company
+   :description "Access a Company by its uuid, if it exists."
    :args
-   {:id {:type ID}}
-   :resolve :query/game-by-id}}}
+   {:uuid {:type ID}}
+   :resolve :query/company-by-uuid}}}
