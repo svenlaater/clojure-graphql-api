@@ -4,6 +4,9 @@ A GraphQL API implementation in Clojure using [walmartlabs/lacinia][1]. This is 
 
 ## TL;DR:
 
+    // running
+    lein run                # Start server. Go to http://localhost:8888/ to access GraphiQL
+    
     // testing
     lein test               # run unit tests
     lein cloverage          # check code coverage
@@ -28,6 +31,15 @@ A GraphQL API implementation in Clojure using [walmartlabs/lacinia][1]. This is 
 
 ### Running
 
+    lein run               # Start the server. 
+    
+or
+
+    lein repl               # Start REPL in `user` namespace
+    user> (start)           # start server
+    user> (stop)            # stop server
+
+[Explore the API][5] via [GraphiQL][6] IDE.
 
 ## Testing
 
@@ -51,7 +63,5 @@ Copyright © 2019 Sven Laater
 [2]: https://clojure.org/
 [3]: https://leiningen.org/
 [4]: https://github.com/bbatsov/clojure-style-guide
-
-
-
-[4]: http://localhost:8888/
+[5]: http://localhost:8888/
+[6]: https://github.com/graphql/graphiql

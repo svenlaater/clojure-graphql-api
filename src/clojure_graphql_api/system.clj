@@ -12,3 +12,10 @@
          (server/new-server)
          (schema/new-schema-provider)
          (db/new-db)))
+
+
+(defn -main
+  "The entry-point for 'lein run'"
+  [& args]
+  (println "\nStarting server...")
+  (component/start (new-system)))
