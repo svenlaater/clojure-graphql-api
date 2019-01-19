@@ -35,11 +35,8 @@
     (-> (swap! (-> db :data) assoc uuid args-with-uuid)
         (get uuid))))
 
-;; TODO make update smarter so that it would retain existing values
 (defn update-company
   [db  {uuid :uuid :as args}]
-  (prn uuid)
-  (prn args)
   (-> (swap! (-> db :data) update-in [uuid] merge args)
       (get uuid)))
 
