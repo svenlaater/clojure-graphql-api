@@ -20,7 +20,7 @@
     (assoc this :data nil)))
 
 ;; TODO move to utils later
-(defn uuid [] (.toString (java.util.UUID/randomUUID)))
+(defn uuid [] (str (java.util.UUID/randomUUID)))
 
 (defn new-db [] {:db (map->Database {})})
 
@@ -32,16 +32,15 @@
   [db args]
   (let [uuid (uuid)
         args-with-uuid (assoc args :uuid uuid)]
-    (-> (swap! (-> db :data) assoc uuid args-with-uuid)
-        (get uuid))))
+    (get (swap! (:data db) assoc uuid args-with-uuid) uuid)))
 
 (defn update-company
   [db  {uuid :uuid :as args}]
-  (-> (swap! (-> db :data) update-in [uuid] merge args)
-      (get uuid)))
+  (get (swap! (:data db) update-in [uuid] merge args) uuid))
+
 
 (defn delete-company
   [db uuid]
-  (-> (swap-vals! (-> db :data) dissoc uuid)
+  (-> (swap-vals! (:data db) dissoc uuid)
       first
       (get uuid)))
