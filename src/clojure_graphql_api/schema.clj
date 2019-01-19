@@ -2,27 +2,47 @@
   "Contains custom resolvers and a function to provide the full schema."
   (:require
    [clojure.java.io :as io]
-   [com.walmartlabs.lacinia.util :as util]
-   [com.walmartlabs.lacinia.schema :as schema]
+   [com.walmartlabs.lacinia
+    [util :as util]
+    [schema :as schema]
+    [resolve :as resolve]]
    [com.stuartsierra.component :as component]
    [clojure.edn :as edn]
    [clojure-graphql-api.db :as db])) 
 
-(defn companies
+(defn list-companies
   [db]
   (fn [_ _ _]
     (hash-map :items (db/list-companies db))))
 
-(defn company
+(defn get-company
   [db]
   (fn [_ args _]
     (db/get-company db (:uuid args))))
 
+(defn insert-company
+  [db]
+  (fn [_ args _]
+    (db/insert-company db args)))
+
+(defn update-company
+  [db]
+  (fn [_ args _]
+    (db/update-company db args)))
+
+(defn delete-company
+  [db]
+  (fn [_ args _]
+    (db/delete-company db (:uuid args))))
+
 (defn resolver-map
   [component]
   (let [db (:db component)]
-    {:query/companies (companies db)
-     :query/company-by-uuid (company db)}))
+    {:query/companies (list-companies db)
+     :query/company-by-uuid (get-company db)
+     :mutation/insert-company (insert-company db)
+     :mutation/update-company (update-company db)
+     :mutation/delete-company (delete-company db)}))
 
 (defn load-schema
   [component]

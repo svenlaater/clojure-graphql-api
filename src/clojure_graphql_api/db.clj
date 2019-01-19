@@ -9,27 +9,42 @@
   component/Lifecycle
 
   (start [this]
-    (assoc this :data (-> (io/resource "data.edn")
-                          slurp
-                          edn/read-string
-                          atom)))
+    (assoc this :data (->> (io/resource "companies.edn")
+                           slurp
+                           edn/read-string
+                           ;; convert vector to hashmap by uuid for simpler access
+                           (reduce #(assoc %1 (:uuid %2) %2) {})
+                           atom)))
 
   (stop [this]
     (assoc this :data nil)))
 
-(defn new-db
-  []
-  {:db (map->Database {})})
+;; TODO move to utils later
+(defn uuid [] (.toString (java.util.UUID/randomUUID)))
 
-(defn list-companies
-  [db]
-  (->> db :data deref :companies))
+(defn new-db [] {:db (map->Database {})})
 
-(defn get-company
+(defn list-companies [db] (-> db :data deref vals))
+
+(defn get-company [db uuid] (-> db :data deref (get uuid)))
+
+(defn insert-company
+  [db args]
+  (let [uuid (uuid)
+        args-with-uuid (assoc args :uuid uuid)]
+    (-> (swap! (-> db :data) assoc uuid args-with-uuid)
+        (get uuid))))
+
+;; TODO make update smarter so that it would retain existing values
+(defn update-company
+  [db  {uuid :uuid :as args}]
+  (prn uuid)
+  (prn args)
+  (-> (swap! (-> db :data) update-in [uuid] merge args)
+      (get uuid)))
+
+(defn delete-company
   [db uuid]
-  (->> db
-       :data
-       deref
-       :companies
-       (filter #(= uuid (:uuid %)))
-       first))
+  (-> (swap-vals! (-> db :data) dissoc uuid)
+      first
+      (get uuid)))

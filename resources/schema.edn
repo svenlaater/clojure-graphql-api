@@ -12,9 +12,7 @@
     :phone {:type String
             :description "Phone with country code"}
     :number_of_employees {:type Int
-                          :description "Number of employees"}
-    :deleted {:type Boolean
-              :description "Deleted"}}}
+                          :description "Number of employees"}}}
   :Companies
   {:description "Response for fetching a list of companies"
    :fields
@@ -35,4 +33,43 @@
    :description "Access a Company by its uuid, if it exists."
    :args
    {:uuid {:type ID}}
-   :resolve :query/company-by-uuid}}}
+   :resolve :query/company-by-uuid}}
+
+ :mutations
+ {:insert_company
+  {:type :Company
+   :description "Add new company"
+   :args
+   {:name {:type (non-null String)
+           :description "Name of the company. Minimum of 2 characters!"}
+    :address {:type String
+              :description "Address of the company"}
+    :phone {:type String
+            :description "Phone with country code"}
+    :number_of_employees {:type Int
+                          :description "Number of employees"}}
+   :resolve :mutation/insert-company}
+  
+  :update_company
+  {:type :Company
+   :description "Update existing company information"
+   :args
+   {:uuid {:type (non-null ID)
+           :description "uuid of the company"}
+    :name {:type String
+           :description "Name of the company. Minimum of 2 characters!"}
+    :address {:type String
+              :description "Address of the company"}
+    :phone {:type String
+            :description "Phone with country code"}
+    :number_of_employees {:type Int
+                          :description "Number of employees"}}
+   :resolve :mutation/update-company}
+  
+  :delete_company
+  {:type :Company
+   :description "Add new company"
+   :args
+   {:uuid {:type (non-null ID)
+           :description "uuid of the company"}}
+   :resolve :mutation/delete-company}}}
