@@ -1,5 +1,8 @@
 # Clojure GraphQL API
 
+[![Build Status](https://travis-ci.org/svenlaater/clojure-graphql-api.svg?branch=master)](https://travis-ci.org/svenlaater/clojure-graphql-api)
+[![codecov](https://codecov.io/gh/svenlaater/clojure-graphql-api/branch/master/graph/badge.svg)](https://codecov.io/gh/svenlaater/clojure-graphql-api)
+
 A GraphQL API implementation in [Clojure][2] using [walmartlabs/lacinia][1]. This is just a playground/demo application demonstrating how a project could be set up to cover all the aspects of it's lifecycle (development, testing, CI/CD, documentaion etc.)
 
 ## TL;DR:

@@ -1,0 +1,10 @@
+language: clojure
+jdk:
+- oraclejdk11
+script:
+- lein eastwood
+- lein test
+after_success:
+- lein kibit
+- lein cloverage --codecov
+- bash <(curl -s https://codecov.io/bash)
