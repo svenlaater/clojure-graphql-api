@@ -1,35 +1,28 @@
 (ns clojure-graphql-api.schema
   "Contains custom resolvers and a function to provide the full schema."
   (:require
-    [clojure.java.io :as io]
-    [com.walmartlabs.lacinia.util :as util]
-    [com.walmartlabs.lacinia.schema :as schema]
-    [com.stuartsierra.component :as component]
-    [clojure.edn :as edn]))
+   [clojure.java.io :as io]
+   [com.walmartlabs.lacinia.util :as util]
+   [com.walmartlabs.lacinia.schema :as schema]
+   [com.stuartsierra.component :as component]
+   [clojure.edn :as edn]
+   [clojure-graphql-api.db :as db])) 
 
-(defn resolve-companies
-  [companies-vec context args value]
-  (hash-map :items companies-vec))
+(defn companies
+  [db]
+  (fn [_ _ _]
+    (hash-map :items (db/list-companies db))))
 
-(defn resolve-company-by-uuid
-  [companies-map context args value]
-  (let [{:keys [uuid]} args]
-    (get companies-map uuid)))
-
-(defn entity-map
-  [data k]
-  (reduce #(assoc %1 (:uuid %2) %2)
-          {}
-          (get data k)))
+(defn company
+  [db]
+  (fn [_ args _]
+    (db/get-company db (:uuid args))))
 
 (defn resolver-map
   [component]
-  (let [data (-> (io/resource "data.edn")
-                 slurp
-                 edn/read-string)
-        companies-map (entity-map data :companies)]
-    {:query/companies (partial resolve-companies (:companies data))
-     :query/company-by-uuid (partial resolve-company-by-uuid companies-map)}))
+  (let [db (:db component)]
+    {:query/companies (companies db)
+     :query/company-by-uuid (company db)}))
 
 (defn load-schema
   [component]
@@ -51,4 +44,6 @@
 
 (defn new-schema-provider
   []
-  {:schema-provider (map->SchemaProvider {})})
+  {:schema-provider (-> {}
+                        map->SchemaProvider
+                        (component/using [:db]))})
