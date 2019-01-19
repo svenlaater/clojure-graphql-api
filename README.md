@@ -1,11 +1,11 @@
 # Clojure GraphQL API
 
-A GraphQL API implementation in Clojure using [walmartlabs/lacinia][1]. This is just a playground/demo application demonstrating how a project could be set up to cover all the aspects of it's lifecycle (development, testing, deployment etc.)
+A GraphQL API implementation in [Clojure][2] using [walmartlabs/lacinia][1]. This is just a playground/demo application demonstrating how a project could be set up to cover all the aspects of it's lifecycle (development, testing, CI/CD, documentaion etc.)
 
 ## TL;DR:
 
     // running
-    lein run                # Start server. Go to http://localhost:8888/ to access GraphiQL
+    lein run                # Start the server, open http://localhost:8888/ to access GraphiQL
     
     // testing
     lein test               # run unit tests
@@ -20,26 +20,27 @@ A GraphQL API implementation in Clojure using [walmartlabs/lacinia][1]. This is 
 ## Getting started 
 
 
+
 ### Prerequisites
 
-1. [Clojure 1.9][2]
-2. [Leiningen][3]
-
-
-### Installing 
+1. [Leiningen][3]
 
 
 ### Running
 
-    lein run               # Start the server. 
-    
-or
+Start the server with `lein run` and [Explore the API][5] via [GraphiQL][6] IDE or start REPL manually
 
     lein repl               # Start REPL in `user` namespace
     user> (start)           # start server
     user> (stop)            # stop server
 
-[Explore the API][5] via [GraphiQL][6] IDE.
+
+
+#### [Docker][7] support
+
+    lein uberjar                                           # Generate uberjar
+    docker build -t clojure-graphql-api .                  # Build the image
+    docker run -it --rm -p 8888:8888 clojure-graphql-api   # Run and open http://localhost:8888/
 
 ## Testing
 
@@ -65,3 +66,4 @@ Copyright © 2019 Sven Laater
 [4]: https://github.com/bbatsov/clojure-style-guide
 [5]: http://localhost:8888/
 [6]: https://github.com/graphql/graphiql
+[7]: https://www.docker.com/

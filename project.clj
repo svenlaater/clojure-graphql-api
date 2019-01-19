@@ -3,7 +3,6 @@
   :url "https://github.com/svenlaater/clojure-graphql-api.git"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :main clojure-graphql-api.system
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [com.stuartsierra/component "0.4.0"]
                  [com.walmartlabs/lacinia-pedestal "0.11.0"]
@@ -16,4 +15,6 @@
   :plugins [[jonase/eastwood "0.3.4"]
             [lein-kibit "0.1.6"]
             [lein-ancient "0.6.15"]
-            [lein-cloverage "1.0.13"]])
+            [lein-cloverage "1.0.13"]]
+  :profiles {:uberjar {:aot [clojure-graphql-api.system]}}
+  :main ^{:skip-aot true} clojure-graphql-api.system)

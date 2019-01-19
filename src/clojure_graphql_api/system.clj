@@ -1,4 +1,5 @@
 (ns clojure-graphql-api.system
+  (:gen-class)
   (:require
    [com.stuartsierra.component :as component]
    [clojure-graphql-api
@@ -15,7 +16,5 @@
 
 
 (defn -main
-  "The entry-point for 'lein run'"
   [& args]
-  (println "\nStarting server...")
   (component/start (new-system)))
