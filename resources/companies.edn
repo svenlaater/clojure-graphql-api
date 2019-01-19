@@ -1,0 +1,10 @@
+[{:uuid "26161A06-46D0-4359-AE22-5281B4D5277F"
+   :name "Company 1"
+   :address "Test 1"
+   :phone "+372 54658033"
+   :number_of_employees 10}
+ {:uuid "E1DA565D-7380-41FB-B6CB-86666EFA0A79"
+  :name "Company 2"
+  :address "Test 2"
+  :phone "+372 5558693395"
+  :number_of_employees 20}]
