@@ -23,8 +23,8 @@ script:
 - lein uberjar
 
 - docker --version
-- docker build -t clojure-graphql-api .
-- docker run -d -p 8888:8888 --name {$IMAGE} ${IMAGE}
+- docker build -t ${IMAGE} .
+- docker run -d -p 8888:8888 --name ${IMAGE} ${IMAGE}
 - docker ps | grep -q ${IMAGE}
 
 - pip install --user awscli
