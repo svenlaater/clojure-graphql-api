@@ -2,7 +2,7 @@ language: clojure
 
 env:
   global:
-  - TAG= `date --utc +%FT%T.%3NZ`.$TRAVIS_BUILD_NUMBER
+  - TAG=`date --utc +%FT%T.%3NZ`.$TRAVIS_BUILD_NUMBER
   - IMAGE=clojure-graphql-api
 
 services:
@@ -24,15 +24,15 @@ script:
 
 - docker --version
 - docker build -t clojure-graphql-api .
-- docker run -d -p 8888:8888 --name clojure-graphql-api clojure-graphql-api
-- docker ps | grep -q clojure-graphql-api
+- docker run -d -p 8888:8888 --name {$IMAGE} ${IMAGE}
+- docker ps | grep -q ${IMAGE}
 
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
 - eval $(aws ecr get-login --region us-east-1 --no-include-email | sed 's|https://||') 
 
-- docker tag clojure-graphql-api:latest 257169857724.dkr.ecr.eu-central-1.amazonaws.com/$IMAGE:$TAG
-- docker push 257169857724.dkr.ecr.eu-central-1.amazonaws.com/$IMAGE:$TAG
+- docker tag clojure-graphql-api:latest 257169857724.dkr.ecr.eu-central-1.amazonaws.com/${IMAGE}:${TAG}
+- docker push 257169857724.dkr.ecr.eu-central-1.amazonaws.com/${IMAGE}:${TAG}
 
 after_success:
 - lein ancient
