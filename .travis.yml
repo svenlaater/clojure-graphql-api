@@ -8,7 +8,6 @@ script:
 - lein test
 - lein uberjar
 - docker build -t clojure-graphql-api .
-- docker run -it --rm -p 8888:8888 clojure-graphql-api
 
 after_success:
 - lein ancient
