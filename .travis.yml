@@ -1,10 +1,22 @@
 language: clojure
+
 jdk:
 - oraclejdk11
+
 script:
 - lein eastwood
 - lein test
+- lein uberjar
+- docker build -t clojure-graphql-api .
+- docker run -it --rm -p 8888:8888 clojure-graphql-api
+
 after_success:
+- lein ancient
 - lein kibit
 - lein cloverage --codecov
 - bash <(curl -s https://codecov.io/bash)
+
+deploy:
+  provider: heroku
+  api_key: ...
+  app: glojure-graphql-api
