@@ -19,24 +19,22 @@ before_script:
 - lein test
 
 script:
-# build and validate docker image
 - lein uberjar
+
+- docker --version
 - docker build -t clojure-graphql-api .
 - docker run -d -p 8888:8888 --name clojure-graphql-api clojure-graphql-api
 - docker ps | grep -q clojure-graphql-api
+
+- pip install --user awscli
+- export PATH=$PATH:$HOME/.local/bin
+- eval $(aws ecr get-login --region us-east-1 --no-include-email | sed 's|https://||') 
+
+- docker tag clojure-graphql-api:latest 257169857724.dkr.ecr.eu-central-1.amazonaws.com/$IMAGE:$TAG
+- docker push 257169857724.dkr.ecr.eu-central-1.amazonaws.com/$IMAGE:$TAG
 
 after_success:
 - lein ancient
 - lein kibit
 - lein cloverage --codecov
 - bash <(curl -s https://codecov.io/bash)
-
-before_deploy:
-- docker --version  # document the version travis is using
-- pip install --user awscli # install aws cli w/o sudo
-- export PATH=$PATH:$HOME/.local/bin # put aws in the path
-- eval $(aws ecr get-login --region us-east-1 --no-include-email | sed 's|https://||') 
-
-deploy:
-- docker tag clojure-graphql-api:latest 257169857724.dkr.ecr.eu-central-1.amazonaws.com/$IMAGE:$TAG
-- docker push 257169857724.dkr.ecr.eu-central-1.amazonaws.com/$IMAGE:$TAG
