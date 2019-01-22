@@ -2,7 +2,7 @@ language: clojure
 
 env:
   global:
-  - TAG=`date --utc +%FT%T.%3NZ`.$TRAVIS_BUILD_NUMBER
+  - TAG=`date --utc +%Y%m%dT%H%M%SZ`
   - IMAGE=clojure-graphql-api
 
 services:
