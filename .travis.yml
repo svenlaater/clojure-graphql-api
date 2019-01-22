@@ -29,7 +29,7 @@ script:
 
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
-- eval $(aws ecr get-login --region us-east-1 --no-include-email | sed 's|https://||') 
+- eval $(aws ecr get-login --region eu-central-1 --no-include-email | sed 's|https://||') 
 
 - docker tag clojure-graphql-api:latest 257169857724.dkr.ecr.eu-central-1.amazonaws.com/${IMAGE}:${TAG}
 - docker push 257169857724.dkr.ecr.eu-central-1.amazonaws.com/${IMAGE}:${TAG}
