@@ -1,8 +1,9 @@
 language: clojure
 
 env:
-- TAG= `date --utc +%FT%T.%3NZ`.$TRAVIS_BUILD_NUMBER
-- IMAGE=clojure-graphql-api
+  global:
+  - TAG= `date --utc +%FT%T.%3NZ`.$TRAVIS_BUILD_NUMBER
+  - IMAGE=clojure-graphql-api
 
 services:
   - docker
