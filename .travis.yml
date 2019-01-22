@@ -16,7 +16,10 @@ after_success:
 - lein cloverage --codecov
 - bash <(curl -s https://codecov.io/bash)
 
-deploy:
-  provider: heroku
-  api_key: ...
-  app: glojure-graphql-api
+- docker --version  # document the version travis is using
+- pip install --user awscli # install aws cli w/o sudo
+- export PATH=$PATH:$HOME/.local/bin # put aws in the path
+- eval $(aws ecr get-login --region us-east-1) 
+- docker build -t  docker build -t clojure-graphql-api .
+- docker tag clojure-graphql-api:latest 257169857724.dkr.ecr.eu-central-1.amazonaws.com/clojure-graphql-api:latest
+- docker push 257169857724.dkr.ecr.eu-central-1.amazonaws.com/clojure-graphql-api:latest
