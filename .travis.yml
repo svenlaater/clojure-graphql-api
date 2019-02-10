@@ -5,14 +5,12 @@ env:
   - COMMIT_HASH=`git rev-parse --short HEAD`
   - TIMESTAMP=`date --utc +%Y%m%dT%H%M%SZ`
   # build a tag that consist of git commit hash and ISO-8601 
-  # compatible UTC timestamp separated by 
+  # compatible UTC timestamp separated by "-"
   - TAG=${COMMIT_HASH}-${TIMESTAMP}
   - REGION=eu-central-1
-  # Name of the project/docker image
   - NAME=clojure-graphql-api
   - AWS_QA=257169857724
   - AWS_PROD=257169857724
-  # ECR repository
   - ECR=257169857724.dkr.ecr.${REGION}.amazonaws.com
   - IMAGE=${ECR}/${NAME}:${TAG}
 
@@ -32,16 +30,15 @@ install:
 - export PATH=$PATH:$HOME/.local/bin
 
 script:
-# run clojure specific CI pipeline commands.
-# You can implement any other JVM language
-# pipeline on top of this .travis.yml e.g.
-# travis-ci/script_scala.sh etc.
+# run clojure specific CI pipeline commands. You can
+# implement any other JVM language pipeline on top of
+# this travis file e.g. travis-ci/script_scala.sh etc.
 - travis-ci/script_clojure.sh
 
 - docker build -t ${NAME} .
 - docker tag ${NAME} ${IMAGE}
 
-# Validate docker image
+# Validate docker image (TODO make sure it works!)
 - docker run -d -p 8888:8888 --name ${NAME} ${NAME}
 - docker ps | grep -q ${NAME}
 
