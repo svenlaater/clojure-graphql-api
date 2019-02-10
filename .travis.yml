@@ -2,8 +2,15 @@ language: clojure
 
 env:
   global:
-  - TAG=`date --utc +%Y%m%dT%H%M%SZ`
-  - IMAGE=clojure-graphql-api
+  - COMMIT_HASH=`git rev-parse --short HEAD`
+  - TIMESTAMP=`date --utc +%Y%m%dT%H%M%SZ`
+  - TAG=${COMMIT_HASH}-${TIMESTAMP}
+  # Name of the project/docker image
+  - NAME=clojure-graphql-api
+  - AWS_QA=257169857724
+  - AWS_PROD=257169857724
+  # ECR repository
+  - ECR=257169857724.dkr.ecr.eu-central-1.amazonaws.com
 
 services:
   - docker
@@ -15,27 +22,43 @@ branches:
   only:
   - master
 
-before_script:
-- lein eastwood
-- lein test
+before_install:
+- echo name/tag: ${NAME} / ${TAG}
 
-script:
-- lein uberjar
-
-- docker --version
-- docker build -t ${IMAGE} .
-- docker run -d -p 8888:8888 --name ${IMAGE} ${IMAGE}
-- docker ps | grep -q ${IMAGE}
-
+install:
+# Install AWS CLI
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
-- eval $(aws ecr get-login --region eu-central-1 --no-include-email | sed 's|https://||') 
 
-- docker tag clojure-graphql-api:latest 257169857724.dkr.ecr.eu-central-1.amazonaws.com/${IMAGE}:${TAG}
-- docker push 257169857724.dkr.ecr.eu-central-1.amazonaws.com/${IMAGE}:${TAG}
+# install all the projet dependencies
+- lein deps
 
-after_success:
+before_script:
+# Run various static analysis tools
+- lein eastwood
 - lein ancient
 - lein kibit
+
+# Run unit tests
+- lein test
+
+# Generate and publish code coverage report
 - lein cloverage --codecov
 - bash <(curl -s https://codecov.io/bash)
+
+script:
+# Build uberjar and create docker image
+- lein uberjar
+- docker --version
+- docker build -t ${NAME} .
+- docker tag ${NAME} ${ECR}/${NAME}:${TAG}
+
+# Validate docker image
+- docker run -d -p 8888:8888 --name ${NAME} ${NAME}
+- docker ps | grep -q ${NAME}
+
+after_success:
+# Push image to ECR
+- eval $(aws ecr get-login --region eu-central-1 --no-include-email | sed 's|https://||') 
+- docker push ${ECR}/${NAME}:${TAG}
+
