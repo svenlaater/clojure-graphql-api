@@ -23,7 +23,8 @@ branches:
   - master
 
 before_install:
-- echo name/tag: ${NAME} / ${TAG}
+- echo NAME: ${NAME}
+- echo TAG: ${TAG}
 
 install:
 # Install AWS CLI
@@ -49,6 +50,7 @@ before_script:
 script:
 # Build uberjar and create docker image
 - lein uberjar
+
 - docker build -t ${NAME} .
 - docker tag ${NAME} ${ECR}/${NAME}:${TAG}
 
