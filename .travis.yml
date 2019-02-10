@@ -2,9 +2,11 @@ language: clojure
 
 env:
   global:
+  - COMMIT_HASH=`git rev-parse --short HEAD`
+  - TIMESTAMP=`date --utc +%Y%m%dT%H%M%SZ`
   # build a tag that consist of git commit hash and ISO-8601 
-  # compatible UTC timestamp separated by "-"
-  - TAG=${git rev-parse --short HEAD}-${date --utc +%Y%m%dT%H%M%SZ}
+  # compatible UTC timestamp separated by 
+  - TAG=${COMMIT_HASH}-${TIMESTAMP}
   - REGION=eu-central-1
   # Name of the project/docker image
   - NAME=clojure-graphql-api
@@ -29,25 +31,12 @@ install:
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
 
-# install all the project dependencies
-- lein deps
-
-before_script:
-# Run various static analysis tools
-- lein eastwood
-- lein ancient
-- lein kibit
-
-# Run unit tests
-- lein test
-
-# Generate and publish code coverage report
-- lein cloverage --codecov || true
-- bash <(curl -s https://codecov.io/bash)
-
 script:
-# Build uberjar and create docker image
-- lein uberjar
+# run clojure specific CI pipeline commands.
+# You can implement any other JVM language
+# pipeline on top of this .travis.yml e.g.
+# travis-ci/script_scala.sh etc.
+- travis-ci/script_clojure.sh
 
 - docker build -t ${NAME} .
 - docker tag ${NAME} ${IMAGE}
