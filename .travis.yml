@@ -27,7 +27,7 @@ install:
 - pip install --user awscli
 - export PATH=$PATH:$HOME/.local/bin
 
-# install all the projet dependencies
+# install all the project dependencies
 - lein deps
 
 before_script:
@@ -40,7 +40,7 @@ before_script:
 - lein test
 
 # Generate and publish code coverage report
-- lein cloverage --codecov
+- lein cloverage --codecov || true
 - bash <(curl -s https://codecov.io/bash)
 
 script:
