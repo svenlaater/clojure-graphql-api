@@ -49,7 +49,6 @@ before_script:
 script:
 # Build uberjar and create docker image
 - lein uberjar
-- docker --version
 - docker build -t ${NAME} .
 - docker tag ${NAME} ${ECR}/${NAME}:${TAG}
 
