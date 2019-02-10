@@ -2,15 +2,17 @@ language: clojure
 
 env:
   global:
-  - COMMIT_HASH=`git rev-parse --short HEAD`
-  - TIMESTAMP=`date --utc +%Y%m%dT%H%M%SZ`
-  - TAG=${COMMIT_HASH}-${TIMESTAMP}
+  # build a tag that consist of git commit hash and ISO-8601 
+  # compatible UTC timestamp separated by "-"
+  - TAG=${git rev-parse --short HEAD}-${date --utc +%Y%m%dT%H%M%SZ}
+  - REGION=eu-central-1
   # Name of the project/docker image
   - NAME=clojure-graphql-api
   - AWS_QA=257169857724
   - AWS_PROD=257169857724
   # ECR repository
-  - ECR=257169857724.dkr.ecr.eu-central-1.amazonaws.com
+  - ECR=257169857724.dkr.ecr.${REGION}.amazonaws.com
+  - IMAGE=${ECR}/${NAME}:${TAG}
 
 services:
   - docker
@@ -48,7 +50,7 @@ script:
 - lein uberjar
 
 - docker build -t ${NAME} .
-- docker tag ${NAME} ${ECR}/${NAME}:${TAG}
+- docker tag ${NAME} ${IMAGE}
 
 # Validate docker image
 - docker run -d -p 8888:8888 --name ${NAME} ${NAME}
@@ -56,8 +58,5 @@ script:
 
 after_success:
 # Push image to ECR
-# Make sure to have AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
-# defined as environment variables
-- eval $(aws ecr get-login --region eu-central-1 --no-include-email | sed 's|https://||') 
-- docker push ${ECR}/${NAME}:${TAG}
+- travis-ci/docker_push.sh
 
