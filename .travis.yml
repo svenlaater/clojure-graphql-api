@@ -22,10 +22,6 @@ branches:
   only:
   - master
 
-before_install:
-- echo NAME: ${NAME}
-- echo TAG: ${TAG}
-
 install:
 # Install AWS CLI
 - pip install --user awscli
